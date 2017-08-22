@@ -1,0 +1,36 @@
+# check out the source code from github
+git clone https://github.com/sanjaypandrala/hellowhale.git
+
+# build and push docker image
+docker build . -t hellowhale
+docker run -d -p 80:80 --name hellowhale hellowhale
+docker tag hellowhale sanj/hellowhale
+docker login -u sanj -p xxxx
+docker push sanj/hellowhale
+
+# deploy to kubenetes
+kubectl create deployment hellowhale --image sanj/hellowhale
+kubectl expose deployment/hellowhale --port=80 --name=hellowhalesvc --type=LoadBalancer
+
+# configure jenkins
+	# update jenkins
+	# add webhook endpoint
+	# add docker hub password
+
+#configure github
+	# add url http://<jenkins_IP>:8080/github-webhook/
+
+# create new job in jenkins
+	# add github repo
+
+# jenkins build config
+IMAGE_NAME="sanj/hellowhale:${BUILD_NUMBER}"
+docker build . -t $IMAGE_NAME
+docker login -u sanj -p ${DOCKER_HUB}
+docker push $IMAGE_NAME
+
+# deploy to kubernetes
+IMAGE_NAME="sanj/hellowhale:${BUILD_NUMBER}
+kubectl set image deployment/hellowhale hellowhale=$IMAGE_NAME
+
+
